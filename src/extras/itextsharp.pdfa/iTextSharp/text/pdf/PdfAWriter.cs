@@ -49,11 +49,13 @@ using iTextSharp.text.pdf.interfaces;
 using iTextSharp.text.xml.xmp;
 using iTextSharp.text.pdf.intern;
 
-namespace iTextSharp.text.pdf {
+namespace iTextSharp.text.pdf
+{
     /**
      * @see PdfWriter
      */
-    public class PdfAWriter : PdfWriter {
+    public class PdfAWriter : PdfWriter
+    {
         public static String MimeTypePdf = "application/pdf";
         public static String MimeTypeOctetStream = "application/octet-stream";
 
@@ -65,7 +67,8 @@ namespace iTextSharp.text.pdf {
          * @return	a new <CODE>PdfWriter</CODE>
          * @throws	DocumentException on error
          */
-        public static PdfAWriter GetInstance(Document document, Stream os, PdfAConformanceLevel conformanceLevel) {
+        public static PdfAWriter GetInstance(Document document, Stream os, PdfAConformanceLevel conformanceLevel)
+        {
             PdfDocument pdf = new PdfDocument();
             document.AddDocListener(pdf);
             PdfAWriter writer = new PdfAWriter(pdf, os, conformanceLevel);
@@ -84,7 +87,8 @@ namespace iTextSharp.text.pdf {
          */
 
         public static PdfAWriter GetInstance(Document document, Stream os, IDocListener listener,
-                                             PdfAConformanceLevel conformanceLevel) {
+                                             PdfAConformanceLevel conformanceLevel)
+        {
             PdfDocument pdf = new PdfDocument();
             pdf.AddDocListener(listener);
             document.AddDocListener(pdf);
@@ -99,8 +103,10 @@ namespace iTextSharp.text.pdf {
          * @param conformanceLevel
          */
 
-        public static void SetPdfVersion(PdfWriter writer, PdfAConformanceLevel conformanceLevel) {
-            switch (conformanceLevel) {
+        public static void SetPdfVersion(PdfWriter writer, PdfAConformanceLevel conformanceLevel)
+        {
+            switch (conformanceLevel)
+            {
                 case PdfAConformanceLevel.PDF_A_1A:
                 case PdfAConformanceLevel.PDF_A_1B:
                     writer.PdfVersion = PdfWriter.VERSION_1_4;
@@ -126,10 +132,12 @@ namespace iTextSharp.text.pdf {
          */
 
         public override void SetOutputIntents(String outputConditionIdentifier, String outputCondition,
-                                              String registryName, String info, ICC_Profile colorProfile) {
+                                              String registryName, String info, ICC_Profile colorProfile)
+        {
             base.SetOutputIntents(outputConditionIdentifier, outputCondition, registryName, info, colorProfile);
             PdfArray a = extraCatalog.GetAsArray(PdfName.OUTPUTINTENTS);
-            if (a != null) {
+            if (a != null)
+            {
                 PdfDictionary d = a.GetAsDict(0);
                 if (d != null)
                     d.Put(PdfName.S, PdfName.GTS_PDFA1);
@@ -175,7 +183,8 @@ namespace iTextSharp.text.pdf {
          * @param pdfx
          */
 
-        virtual public void SetPDFXConformance(int pdfx) {
+        virtual public void SetPDFXConformance(int pdfx)
+        {
             throw new PdfXConformanceException(
                 MessageLocalization.GetComposedMessage("pdfx.conformance.cannot.be.set.for.PdfAWriter.instance"));
         }
@@ -184,8 +193,9 @@ namespace iTextSharp.text.pdf {
          * @param conformanceLevel PDF/A conformance level of a new PDF document
          */
         protected internal PdfAWriter(PdfAConformanceLevel conformanceLevel)
-            : base() {
-            ((IPdfAConformance) pdfIsoConformance).SetConformanceLevel(conformanceLevel);
+            : base()
+        {
+            ((IPdfAConformance)pdfIsoConformance).SetConformanceLevel(conformanceLevel);
             SetPdfVersion(this, conformanceLevel);
         }
 
@@ -198,8 +208,9 @@ namespace iTextSharp.text.pdf {
          * @param conformanceLevel PDF/A conformance level of a new PDF document
          */
         protected internal PdfAWriter(PdfDocument document, Stream os, PdfAConformanceLevel conformanceLevel)
-            : base(document, os) {
-            ((IPdfAConformance) pdfIsoConformance).SetConformanceLevel(conformanceLevel);
+            : base(document, os)
+        {
+            ((IPdfAConformance)pdfIsoConformance).SetConformanceLevel(conformanceLevel);
             SetPdfVersion(this, conformanceLevel);
         }
 
@@ -207,38 +218,45 @@ namespace iTextSharp.text.pdf {
          * @see com.itextpdf.text.pdf.PdfWriter#getTtfUnicodeWriter()
          */
 
-        protected internal override TtfUnicodeWriter GetTtfUnicodeWriter() {
+        protected override TtfUnicodeWriter GetTtfUnicodeWriter()
+        {
             if (ttfUnicodeWriter == null)
                 ttfUnicodeWriter = new PdfATtfUnicodeWriter(this, ((IPdfAConformance)pdfIsoConformance).ConformanceLevel);
             return ttfUnicodeWriter;
         }
 
-        override protected internal XmpWriter CreateXmpWriter(MemoryStream baos, PdfDictionary info) {
+        override protected XmpWriter CreateXmpWriter(MemoryStream baos, PdfDictionary info)
+        {
             return
-                xmpWriter = new PdfAXmpWriter(baos, info, ((IPdfAConformance) pdfIsoConformance).ConformanceLevel, this);
+                xmpWriter = new PdfAXmpWriter(baos, info, ((IPdfAConformance)pdfIsoConformance).ConformanceLevel, this);
         }
 
-        override protected internal XmpWriter CreateXmpWriter(MemoryStream baos, IDictionary<String, String> info) {
+        override protected XmpWriter CreateXmpWriter(MemoryStream baos, IDictionary<String, String> info)
+        {
             return
-                xmpWriter = new PdfAXmpWriter(baos, info, ((IPdfAConformance) pdfIsoConformance).ConformanceLevel, this);
+                xmpWriter = new PdfAXmpWriter(baos, info, ((IPdfAConformance)pdfIsoConformance).ConformanceLevel, this);
         }
 
-        public override IPdfIsoConformance InitPdfIsoConformance() {
+        public override IPdfIsoConformance InitPdfIsoConformance()
+        {
             return new PdfAConformanceImp(this);
         }
 
-        protected ICounter COUNTER = CounterFactory.GetCounter(typeof (PdfAWriter));
+        protected ICounter COUNTER = CounterFactory.GetCounter(typeof(PdfAWriter));
 
-        protected override ICounter GetCounter() {
+        protected override ICounter GetCounter()
+        {
             return COUNTER;
         }
 
-        protected internal override void CacheObject(PdfIndirectObject iobj) {
+        protected override void CacheObject(PdfIndirectObject iobj)
+        {
             GetPdfAChecker().CacheObject(iobj.IndirectReference, iobj.objecti);
         }
 
-        private PdfAChecker GetPdfAChecker() {
-            return ((PdfAConformanceImp) pdfIsoConformance).PdfAChecker;
+        private PdfAChecker GetPdfAChecker()
+        {
+            return ((PdfAConformanceImp)pdfIsoConformance).PdfAChecker;
         }
 
         /**
@@ -256,7 +274,8 @@ namespace iTextSharp.text.pdf {
          * @throws IOException on error
          */
         virtual public PdfFileSpecification AddFileAttachment(String description, byte[] fileStore, String file, String fileDisplay,
-            String mimeType, PdfName afRelationshipValue, PdfDictionary fileParameter) {
+            String mimeType, PdfName afRelationshipValue, PdfDictionary fileParameter)
+        {
             PdfFileSpecification pdfFileSpecification = PdfFileSpecification.FileEmbedded(this, file, fileDisplay,
                 fileStore, mimeType, fileParameter, PdfStream.BEST_COMPRESSION);
 
@@ -283,7 +302,8 @@ namespace iTextSharp.text.pdf {
          * @throws IOException on error
          */
         public virtual PdfFileSpecification AddFileAttachment(String description, byte[] fileStore, String file,
-            String fileDisplay, String mimeType, PdfName afRelationshipValue) {
+            String fileDisplay, String mimeType, PdfName afRelationshipValue)
+        {
             return AddFileAttachment(description, fileStore, file, fileDisplay, mimeType, afRelationshipValue, null);
         }
 
@@ -299,7 +319,8 @@ namespace iTextSharp.text.pdf {
          *
          * @throws IOException on error
          */
-        virtual public void AddFileAttachment(String description, byte[] fileStore, String file, String fileDisplay, PdfName afRelationshipValue) {
+        virtual public void AddFileAttachment(String description, byte[] fileStore, String file, String fileDisplay, PdfName afRelationshipValue)
+        {
             AddFileAttachment(description, fileStore, file, fileDisplay, MimeTypeOctetStream, afRelationshipValue);
         }
 
@@ -313,7 +334,8 @@ namespace iTextSharp.text.pdf {
          * @param fileDisplay the actual file name stored in the pdf
          * @throws IOException on error
          */
-        public override void AddFileAttachment(String description, byte[] fileStore, String file, String fileDisplay) {
+        public override void AddFileAttachment(String description, byte[] fileStore, String file, String fileDisplay)
+        {
             AddFileAttachment(description, fileStore, file, fileDisplay, AFRelationshipValue.Unspecified);
         }
 
@@ -327,7 +349,8 @@ namespace iTextSharp.text.pdf {
          * @param fileDisplay the actual file name stored in the pdf
          * @throws IOException on error
          */
-        virtual public void AddPdfAttachment(String description, byte[] fileStore, String file, String fileDisplay) {
+        virtual public void AddPdfAttachment(String description, byte[] fileStore, String file, String fileDisplay)
+        {
             AddPdfAttachment(description, fileStore, file, fileDisplay, AFRelationshipValue.Unspecified);
         }
 
@@ -343,30 +366,35 @@ namespace iTextSharp.text.pdf {
          *
          * @throws IOException on error
          */
-        virtual public void AddPdfAttachment(String description, byte[] fileStore, String file, String fileDisplay, PdfName afRelationshipValue) {
+        virtual public void AddPdfAttachment(String description, byte[] fileStore, String file, String fileDisplay, PdfName afRelationshipValue)
+        {
             AddFileAttachment(description, fileStore, file, fileDisplay, MimeTypePdf, afRelationshipValue);
         }
 
-        public override void Close() {
+        public override void Close()
+        {
             base.Close();
             GetPdfAChecker().Close(this);
         }
 
-        public override PdfAnnotation CreateAnnotation(Rectangle rect, PdfName subtype) {
+        public override PdfAnnotation CreateAnnotation(Rectangle rect, PdfName subtype)
+        {
             PdfAnnotation a = base.CreateAnnotation(rect, subtype);
             if (!PdfName.POPUP.Equals(subtype))
                 a.Put(PdfName.F, new PdfNumber(PdfAnnotation.FLAGS_PRINT));
             return a;
         }
 
-        public override PdfAnnotation CreateAnnotation(float llx, float lly, float urx, float ury, PdfString title, PdfString content, PdfName subtype) {
+        public override PdfAnnotation CreateAnnotation(float llx, float lly, float urx, float ury, PdfString title, PdfString content, PdfName subtype)
+        {
             PdfAnnotation a = base.CreateAnnotation(llx, lly, urx, ury, title, content, subtype);
             if (!PdfName.POPUP.Equals(subtype))
                 a.Put(PdfName.F, new PdfNumber(PdfAnnotation.FLAGS_PRINT));
             return a;
         }
 
-        public override PdfAnnotation CreateAnnotation(float llx, float lly, float urx, float ury, PdfAction action, PdfName subtype) {
+        public override PdfAnnotation CreateAnnotation(float llx, float lly, float urx, float ury, PdfAction action, PdfName subtype)
+        {
             PdfAnnotation a = base.CreateAnnotation(llx, lly, urx, ury, action, subtype);
             if (!PdfName.POPUP.Equals(subtype))
                 a.Put(PdfName.F, new PdfNumber(PdfAnnotation.FLAGS_PRINT));

@@ -51,18 +51,21 @@ using iTextSharp.text.pdf.intern;
 using iTextSharp.xmp;
 using iTextSharp.xmp.impl;
 using iTextSharp.xmp.properties;
-namespace iTextSharp.text.pdf {
+namespace iTextSharp.text.pdf
+{
     /**
      * Extension to PdfStamperImp that will attempt to keep a file
      * in conformance with the PDF/A standard.
      */
-    public class PdfAStamperImp : PdfStamperImp {
+    public class PdfAStamperImp : PdfStamperImp
+    {
 
         protected ICounter COUNTER = CounterFactory.GetCounter(typeof(PdfAStamper));
 
-        protected  IXmpMeta xmpMeta = null;
+        protected IXmpMeta xmpMeta = null;
 
-        protected override ICounter GetCounter() {
+        protected override ICounter GetCounter()
+        {
             return COUNTER;
         }
 
@@ -77,29 +80,36 @@ namespace iTextSharp.text.pdf {
          * @throws IOException
          */
         internal PdfAStamperImp(PdfReader reader, Stream os, char pdfVersion, bool append, PdfAConformanceLevel conformanceLevel)
-            : base(reader, os, pdfVersion, append) {
+            : base(reader, os, pdfVersion, append)
+        {
             ((IPdfAConformance)pdfIsoConformance).SetConformanceLevel(conformanceLevel);
             PdfAWriter.SetPdfVersion(this, conformanceLevel);
             ReadPdfAInfo();
         }
 
-        protected override void ReadColorProfile() {
+        protected override void ReadColorProfile()
+        {
             PdfObject outputIntents = reader.Catalog.GetAsArray(PdfName.OUTPUTINTENTS);
-            if (outputIntents != null && ((PdfArray) outputIntents).Size > 0) {
+            if (outputIntents != null && ((PdfArray)outputIntents).Size > 0)
+            {
                 PdfStream iccProfileStream = null;
-                for (int i = 0; i < ((PdfArray) outputIntents).Size; i++) {
-                    PdfDictionary outputIntentDictionary = ((PdfArray) outputIntents).GetAsDict(i);
-                    if (outputIntentDictionary != null) {
+                for (int i = 0; i < ((PdfArray)outputIntents).Size; i++)
+                {
+                    PdfDictionary outputIntentDictionary = ((PdfArray)outputIntents).GetAsDict(i);
+                    if (outputIntentDictionary != null)
+                    {
                         PdfName gts = outputIntentDictionary.GetAsName(PdfName.S);
-                        if (iccProfileStream == null || PdfName.GTS_PDFA1.Equals(gts)) {
+                        if (iccProfileStream == null || PdfName.GTS_PDFA1.Equals(gts))
+                        {
                             iccProfileStream = outputIntentDictionary.GetAsStream(PdfName.DESTOUTPUTPROFILE);
                             if (iccProfileStream != null && PdfName.GTS_PDFA1.Equals(gts))
                                 break;
                         }
                     }
                 }
-                if (iccProfileStream is PRStream) {
-                    colorProfile = ICC_Profile.GetInstance(PdfReader.GetStreamBytes((PRStream) iccProfileStream));
+                if (iccProfileStream is PRStream)
+                {
+                    colorProfile = ICC_Profile.GetInstance(PdfReader.GetStreamBytes((PRStream)iccProfileStream));
                 }
             }
         }
@@ -107,12 +117,14 @@ namespace iTextSharp.text.pdf {
         /**
          * @see PdfStamperImp#setOutputIntents(String, String, String, String, ICC_Profile)
          */
-        override public void SetOutputIntents(String outputConditionIdentifier, String outputCondition, String registryName, String info, ICC_Profile colorProfile) {
+        override public void SetOutputIntents(String outputConditionIdentifier, String outputCondition, String registryName, String info, ICC_Profile colorProfile)
+        {
             base.SetOutputIntents(outputConditionIdentifier, outputCondition, registryName, info, colorProfile);
             PdfArray a = extraCatalog.GetAsArray(PdfName.OUTPUTINTENTS);
-            if(a != null) {
+            if (a != null)
+            {
                 PdfDictionary d = a.GetAsDict(0);
-                if(d != null)
+                if (d != null)
                     d.Put(PdfName.S, PdfName.GTS_PDFA1);
             }
         }
@@ -121,7 +133,8 @@ namespace iTextSharp.text.pdf {
          * Always throws an exception since PDF/X conformance level cannot be set for PDF/A conformant documents.
          * @param pdfx
          */
-        virtual public void SetPDFXConformance(int pdfx) {
+        virtual public void SetPDFXConformance(int pdfx)
+        {
             throw new PdfAConformanceException(MessageLocalization.GetComposedMessage("pdfx.conformance.cannot.be.set.for.PdfAStamperImp.instance"));
         }
 
@@ -129,99 +142,119 @@ namespace iTextSharp.text.pdf {
          * @see com.itextpdf.text.pdf.PdfStamperImp#GetTtfUnicodeWriter()
          */
 
-        internal protected override TtfUnicodeWriter GetTtfUnicodeWriter() {
-            if(ttfUnicodeWriter == null)
-                ttfUnicodeWriter = new PdfATtfUnicodeWriter(this, ((IPdfAConformance) pdfIsoConformance).ConformanceLevel);
+        protected override TtfUnicodeWriter GetTtfUnicodeWriter()
+        {
+            if (ttfUnicodeWriter == null)
+                ttfUnicodeWriter = new PdfATtfUnicodeWriter(this, ((IPdfAConformance)pdfIsoConformance).ConformanceLevel);
             return ttfUnicodeWriter;
         }
 
-        override protected internal XmpWriter CreateXmpWriter(MemoryStream baos, PdfDictionary info) {
-            return new PdfAXmpWriter(baos, info, ((IPdfAConformance) pdfIsoConformance).ConformanceLevel, this);
+        override protected XmpWriter CreateXmpWriter(MemoryStream baos, PdfDictionary info)
+        {
+            return new PdfAXmpWriter(baos, info, ((IPdfAConformance)pdfIsoConformance).ConformanceLevel, this);
         }
 
-        override protected internal XmpWriter CreateXmpWriter(MemoryStream baos, IDictionary<String, String> info) {
-            return new PdfAXmpWriter(baos, info, ((IPdfAConformance) pdfIsoConformance).ConformanceLevel, this);
+        override protected XmpWriter CreateXmpWriter(MemoryStream baos, IDictionary<String, String> info)
+        {
+            return new PdfAXmpWriter(baos, info, ((IPdfAConformance)pdfIsoConformance).ConformanceLevel, this);
         }
 
-        override public IPdfIsoConformance InitPdfIsoConformance() {
+        override public IPdfIsoConformance InitPdfIsoConformance()
+        {
             return new PdfAConformanceImp(this);
         }
 
-        private void ReadPdfAInfo() {
+        private void ReadPdfAInfo()
+        {
             byte[] metadata = null;
-            
+
             IXmpProperty pdfaidConformance = null;
             IXmpProperty pdfaidPart = null;
-            try {
+            try
+            {
                 metadata = reader.Metadata;
                 xmpMeta = XmpMetaParser.Parse(metadata, null);
                 pdfaidConformance = xmpMeta.GetProperty(XmpConst.NS_PDFA_ID, "pdfaid:conformance");
                 pdfaidPart = xmpMeta.GetProperty(XmpConst.NS_PDFA_ID, "pdfaid:part");
-            } catch(Exception e) {
+            }
+            catch (Exception e)
+            {
                 throw new PdfAConformanceException(MessageLocalization.GetComposedMessage("only.pdfa.documents.can.be.opened.in.PdfAStamper"));
             }
-            if(pdfaidConformance == null || pdfaidPart == null) {
+            if (pdfaidConformance == null || pdfaidPart == null)
+            {
                 throw new PdfAConformanceException(MessageLocalization.GetComposedMessage("only.pdfa.documents.can.be.opened.in.PdfAStamper"));
             }
-            switch(((IPdfAConformance)pdfIsoConformance).ConformanceLevel) {
+            switch (((IPdfAConformance)pdfIsoConformance).ConformanceLevel)
+            {
                 case PdfAConformanceLevel.PDF_A_1A:
                 case PdfAConformanceLevel.PDF_A_1B:
-                    if(!"1".Equals(pdfaidPart.Value)) {
+                    if (!"1".Equals(pdfaidPart.Value))
+                    {
                         throw new PdfAConformanceException(MessageLocalization.GetComposedMessage("only.pdfa.1.documents.can.be.opened.in.PdfAStamper", "1"));
                     }
                     break;
                 case PdfAConformanceLevel.PDF_A_2A:
                 case PdfAConformanceLevel.PDF_A_2B:
                 case PdfAConformanceLevel.PDF_A_2U:
-                    if(!"2".Equals(pdfaidPart.Value)) {
+                    if (!"2".Equals(pdfaidPart.Value))
+                    {
                         throw new PdfAConformanceException(MessageLocalization.GetComposedMessage("only.pdfa.1.documents.can.be.opened.in.PdfAStamper", "2"));
                     }
                     break;
                 case PdfAConformanceLevel.PDF_A_3A:
                 case PdfAConformanceLevel.PDF_A_3B:
                 case PdfAConformanceLevel.PDF_A_3U:
-                    if(!"3".Equals(pdfaidPart.Value)) {
+                    if (!"3".Equals(pdfaidPart.Value))
+                    {
                         throw new PdfAConformanceException(MessageLocalization.GetComposedMessage("only.pdfa.1.documents.can.be.opened.in.PdfAStamper", "3"));
                     }
                     break;
             }
         }
 
-        protected internal override void CacheObject(PdfIndirectObject iobj) {
+        protected override void CacheObject(PdfIndirectObject iobj)
+        {
             PdfAChecker.CacheObject(iobj.IndirectReference, iobj.objecti);
         }
 
-        private PdfAChecker PdfAChecker {
-            get { return ((PdfAConformanceImp) pdfIsoConformance).PdfAChecker; }
+        private PdfAChecker PdfAChecker
+        {
+            get { return ((PdfAConformanceImp)pdfIsoConformance).PdfAChecker; }
         }
 
-        protected internal override void Close(IDictionary<string, string> moreInfo) {
+        protected override void Close(IDictionary<string, string> moreInfo)
+        {
             base.Close(moreInfo);
             PdfAChecker.Close(this);
         }
 
-        public override PdfAnnotation CreateAnnotation(Rectangle rect, PdfName subtype) {
+        public override PdfAnnotation CreateAnnotation(Rectangle rect, PdfName subtype)
+        {
             PdfAnnotation a = base.CreateAnnotation(rect, subtype);
             if (!PdfName.POPUP.Equals(subtype))
                 a.Put(PdfName.F, new PdfNumber(PdfAnnotation.FLAGS_PRINT));
             return a;
         }
 
-        public override PdfAnnotation CreateAnnotation(float llx, float lly, float urx, float ury, PdfString title, PdfString content, PdfName subtype) {
+        public override PdfAnnotation CreateAnnotation(float llx, float lly, float urx, float ury, PdfString title, PdfString content, PdfName subtype)
+        {
             PdfAnnotation a = base.CreateAnnotation(llx, lly, urx, ury, title, content, subtype);
             if (!PdfName.POPUP.Equals(subtype))
                 a.Put(PdfName.F, new PdfNumber(PdfAnnotation.FLAGS_PRINT));
             return a;
         }
 
-        public override PdfAnnotation CreateAnnotation(float llx, float lly, float urx, float ury, PdfAction action, PdfName subtype) {
+        public override PdfAnnotation CreateAnnotation(float llx, float lly, float urx, float ury, PdfAction action, PdfName subtype)
+        {
             PdfAnnotation a = base.CreateAnnotation(llx, lly, urx, ury, action, subtype);
             if (!PdfName.POPUP.Equals(subtype))
                 a.Put(PdfName.F, new PdfNumber(PdfAnnotation.FLAGS_PRINT));
             return a;
         }
 
-        public IXmpMeta GetXmpMeta() {
+        public IXmpMeta GetXmpMeta()
+        {
             return xmpMeta;
         }
     }

@@ -155,7 +155,7 @@ namespace iTextSharp.text.pdf {
             base.AddPage(iPage);
         }
         
-        internal class ByteStore {
+        public class ByteStore {
             private readonly byte[] b;
             private readonly int hash;
             private void SerObject(PdfObject obj, int level,  ByteBuffer bb, Dictionary<RefKey, int> serialized)
@@ -240,7 +240,7 @@ namespace iTextSharp.text.pdf {
                 }
             }
 
-            internal ByteStore(PRStream str, Dictionary<RefKey, int> serialized)
+            public ByteStore(PRStream str, Dictionary<RefKey, int> serialized)
             {
                 ByteBuffer bb = new ByteBuffer();
                 int level = 100;
@@ -249,7 +249,7 @@ namespace iTextSharp.text.pdf {
                 hash = CalculateHash(this.b);
             }
 
-            internal ByteStore(PdfDictionary dict, Dictionary<RefKey, int> serialized)
+            public ByteStore(PdfDictionary dict, Dictionary<RefKey, int> serialized)
             {
                 ByteBuffer bb = new ByteBuffer();
                 int level = 100;

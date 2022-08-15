@@ -48,7 +48,7 @@ namespace iTextSharp.text.io {
      * A RandomAccessSource that is based on a set of underlying sources, treating the sources as if they were a contiguous block of data.
      * @since 5.3.5
      */
-    internal class GroupedRandomAccessSource : IRandomAccessSource {
+    public class GroupedRandomAccessSource : IRandomAccessSource {
         /**
          * The underlying sources (along with some meta data to quickly determine where each source begins and ends)
          */

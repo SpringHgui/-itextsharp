@@ -148,7 +148,7 @@ namespace itextsharp.tests.iTextSharp.text.io
             {
             }
 
-            protected internal override void SourceReleased(IRandomAccessSource source)
+            protected override void SourceReleased(IRandomAccessSource source)
             {
                 openCount[0]--;
                 if (current[0] != source)
@@ -156,7 +156,7 @@ namespace itextsharp.tests.iTextSharp.text.io
                 current[0] = null;
             }
 
-            protected internal override void SourceInUse(IRandomAccessSource source)
+            protected override void SourceInUse(IRandomAccessSource source)
             {
                 if (current[0] != null)
                     throw new AssertionException("Current source wasn't released properly");
@@ -178,7 +178,7 @@ namespace itextsharp.tests.iTextSharp.text.io
                     source1, source2, source3
             };
 
-            
+
             GroupedRandomAccessSourceTestClass grouped = new GroupedRandomAccessSourceTestClass(sources);
 
             grouped.Get(250);

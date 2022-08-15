@@ -2175,7 +2175,7 @@ namespace iTextSharp.text.pdf {
             }
             return action;
         }
-        
+
         /**
         * The local destination to where a local goto with the same
         * name will jump to.
@@ -2185,7 +2185,7 @@ namespace iTextSharp.text.pdf {
         * <CODE>false</CODE> if a local destination with the same name
         * already existed
         */
-        internal bool LocalDestination(String name, PdfDestination destination) {
+        public bool LocalDestination(String name, PdfDestination destination) {
             Destination dest;
             if (localDestinations.ContainsKey(name))
                 dest = localDestinations[name];

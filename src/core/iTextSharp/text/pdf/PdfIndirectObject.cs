@@ -73,8 +73,8 @@ namespace iTextSharp.text.pdf
         internal static byte[] STARTOBJ = DocWriter.GetISOBytes(" obj\n");
         internal static byte[] ENDOBJ = DocWriter.GetISOBytes("\nendobj\n");
         internal static int SIZEOBJ = STARTOBJ.Length + ENDOBJ.Length;
-        protected internal PdfObject objecti;
-        protected internal PdfWriter writer;
+        public PdfObject objecti;
+        protected PdfWriter writer;
 
         // constructors
 
@@ -155,8 +155,9 @@ namespace iTextSharp.text.pdf
             os.Write(ENDOBJ, 0, ENDOBJ.Length);
         }
 
-        public override string ToString() {
-            return new StringBuilder().Append(number).Append(' ').Append(generation).Append(" R: ").Append(objecti != null ? objecti.ToString(): "null").ToString();
+        public override string ToString()
+        {
+            return new StringBuilder().Append(number).Append(' ').Append(generation).Append(" R: ").Append(objecti != null ? objecti.ToString() : "null").ToString();
         }
     }
 }

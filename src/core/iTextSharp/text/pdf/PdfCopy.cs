@@ -67,12 +67,12 @@ namespace iTextSharp.text.pdf {
         public class IndirectReferences {
             PdfIndirectReference theRef;
             bool hasCopied;
-            internal IndirectReferences(PdfIndirectReference refi) {
+            public IndirectReferences(PdfIndirectReference refi) {
                 theRef = refi;
                 hasCopied = false;
             }
-            internal void SetCopied() { hasCopied = true; }
-            internal bool Copied {
+            public void SetCopied() { hasCopied = true; }
+            public bool Copied {
                 get {
                     return hasCopied; 
                 }
@@ -80,7 +80,7 @@ namespace iTextSharp.text.pdf {
                     hasCopied = value;
                 }
             }
-            internal PdfIndirectReference Ref {
+            public PdfIndirectReference Ref {
                 get {
                     return theRef; 
                 }

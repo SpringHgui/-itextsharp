@@ -47,7 +47,7 @@ namespace iTextSharp.text.io {
      * A RandomAccessSource that is based on an underlying byte array 
      * @since 5.3.5
      */
-    internal class ArrayRandomAccessSource : IRandomAccessSource {
+    public class ArrayRandomAccessSource : IRandomAccessSource {
         private byte[] array;
         
         public ArrayRandomAccessSource(byte[] array) {

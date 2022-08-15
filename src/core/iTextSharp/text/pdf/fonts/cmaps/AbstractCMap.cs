@@ -80,7 +80,7 @@ namespace iTextSharp.text.pdf.fonts.cmaps {
 
         internal abstract void AddChar(PdfString mark, PdfObject code);
         
-        internal void AddRange(PdfString from, PdfString to, PdfObject code) {
+        public void AddRange(PdfString from, PdfString to, PdfObject code) {
             byte[] a1 = DecodeStringToByte(from);
             byte[] a2 = DecodeStringToByte(to);
             if (a1.Length != a2.Length || a1.Length == 0)

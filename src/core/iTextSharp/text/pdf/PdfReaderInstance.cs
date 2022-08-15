@@ -71,7 +71,7 @@ namespace iTextSharp.text.pdf {
             myXref = new int[reader.XrefSize];
         }
         
-        internal PdfReader Reader {
+        public PdfReader Reader {
             get {
                 return reader;
             }

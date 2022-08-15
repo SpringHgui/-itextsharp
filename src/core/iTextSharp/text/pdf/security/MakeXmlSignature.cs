@@ -67,7 +67,6 @@ namespace iTextSharp.text.pdf.security
          * @throws DocumentException
          */
         public static void SignXmlDSig(XmlSignatureAppearance sap, IExternalSignature externalSignature, KeyInfoClause keyInfo) {
-
             VerifyArguments(sap, externalSignature);
             List<XmlElement> references = new List<XmlElement>(1);
             references.Add(GenerateContentReference(sap.GetXmlLocator().GetDocument(), sap, null));

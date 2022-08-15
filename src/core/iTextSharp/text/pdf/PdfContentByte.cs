@@ -4087,7 +4087,7 @@ namespace iTextSharp.text.pdf {
                 content.Append("EMC").Append_i(separator);
         }
 
-        internal virtual void AddAnnotation(PdfAnnotation annot) {
+        public virtual void AddAnnotation(PdfAnnotation annot) {
             bool needToTag = IsTagged() && annot.Role != null && (!(annot is PdfFormField) || ((PdfFormField) annot).Kids == null);
             if (needToTag) {
                 OpenMCBlock(annot);

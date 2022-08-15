@@ -94,21 +94,21 @@ namespace iTextSharp.text.pdf {
 
 
         /** Creates a new instance of DocumentFont */
-        internal DocumentFont(PdfDictionary font) {
+        public DocumentFont(PdfDictionary font) {
             this.refFont = null;
             this.font = font;
             Init();
         }
 
         /** Creates a new instance of DocumentFont */
-        internal DocumentFont(PRIndirectReference refFont) {
+        public DocumentFont(PRIndirectReference refFont) {
             this.refFont = refFont;
             font = (PdfDictionary)PdfReader.GetPdfObject(refFont);
             Init();
         }
 
         /** Creates a new instance of DocumentFont */
-        internal DocumentFont(PRIndirectReference refFont, PdfDictionary drEncoding) {
+        public DocumentFont(PRIndirectReference refFont, PdfDictionary drEncoding) {
         this.refFont = refFont;
         font = (PdfDictionary) PdfReader.GetPdfObject(refFont);
         if (font.Get(PdfName.ENCODING) == null

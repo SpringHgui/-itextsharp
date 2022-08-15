@@ -48,33 +48,38 @@ namespace iTextSharp.text.pdf
     /**
      * @see TtfUnicodeWriter
      */
-    internal class PdfATtfUnicodeWriter : TtfUnicodeWriter {
+    internal class PdfATtfUnicodeWriter : TtfUnicodeWriter
+    {
         readonly protected PdfAConformanceLevel pdfAConformanceLevel;
 
         /**
          * @see TtfUnicodeWriter#TtfUnicodeWriter(PdfWriter)
          */
         public PdfATtfUnicodeWriter(PdfWriter writer, PdfAConformanceLevel pdfAConformanceLevel)
-            : base(writer) {
+            : base(writer)
+        {
             this.pdfAConformanceLevel = pdfAConformanceLevel;
         }
 
         /**
          * @see TtfUnicodeWriter#writeFont(TrueTypeFontUnicode, PdfIndirectReference, Object[], byte[])
          */
-        internal protected override void WriteFont(TrueTypeFontUnicode font, PdfIndirectReference refer, Object[] parameters, byte[] rotbits) {
+        protected override void WriteFont(TrueTypeFontUnicode font, PdfIndirectReference refer, Object[] parameters, byte[] rotbits)
+        {
             Dictionary<int, int[]> longTag = (Dictionary<int, int[]>)parameters[0];
             font.AddRangeUni(longTag, true, font.Subset);
-            int [][] metrics = new int[longTag.Count][];
+            int[][] metrics = new int[longTag.Count][];
             longTag.Values.CopyTo(metrics, 0);
             Array.Sort(metrics, font);
             PdfIndirectReference ind_font = null;
             PdfObject pobj = null;
             PdfIndirectObject obj = null;
-            if (font.Cff) {
+            if (font.Cff)
+            {
                 byte[] b = font.ReadCffFont();
-                if (font.Subset || font.SubsetRanges != null) {
-                    CFFFontSubset cff = new CFFFontSubset(new RandomAccessFileOrArray(b),longTag);
+                if (font.Subset || font.SubsetRanges != null)
+                {
+                    CFFFontSubset cff = new CFFFontSubset(new RandomAccessFileOrArray(b), longTag);
                     try
                     {
                         b = cff.Process(cff.GetNames()[0]);
@@ -92,29 +97,36 @@ namespace iTextSharp.text.pdf
                 pobj = new BaseFont.StreamFont(b, "CIDFontType0C", font.CompressionLevel);
                 obj = writer.AddToBody(pobj);
                 ind_font = obj.IndirectReference;
-            } else {
+            }
+            else
+            {
                 byte[] b;
-                if (font.Subset || font.DirectoryOffset != 0) {
-                    lock (font.Rf) {
+                if (font.Subset || font.DirectoryOffset != 0)
+                {
+                    lock (font.Rf)
+                    {
                         TrueTypeFontSubSet sb = new TrueTypeFontSubSet(font.FileName, new RandomAccessFileOrArray(font.Rf), new HashSet2<int>(longTag.Keys), font.DirectoryOffset, false, false);
                         b = sb.Process();
                     }
                 }
-                else {
+                else
+                {
                     b = font.GetFullFont();
                 }
                 int[] lengths = new int[] { b.Length };
-                pobj = new BaseFont.StreamFont(b,lengths, font.CompressionLevel);
+                pobj = new BaseFont.StreamFont(b, lengths, font.CompressionLevel);
                 obj = writer.AddToBody(pobj);
                 ind_font = obj.IndirectReference;
             }
             // CIDSet shall be based on font.maxGlyphId property of the font, it is maxp.numGlyphs for ttf,
             // because technically we convert all unused glyphs to space, e.g. just remove outlines.
             byte[] cidSetBytes = new byte[font.MaxGlyphId / 8 + 1];
-            for (int i = 0; i < font.MaxGlyphId/8; i++) {
+            for (int i = 0; i < font.MaxGlyphId / 8; i++)
+            {
                 cidSetBytes[i] |= 0xff;
             }
-            for (int i = 0; i < font.MaxGlyphId%8; i++) {
+            for (int i = 0; i < font.MaxGlyphId % 8; i++)
+            {
                 cidSetBytes[cidSetBytes.Length - 1] |= rotbits[i];
             }
             PdfStream stream = new PdfStream(cidSetBytes);
@@ -135,7 +147,8 @@ namespace iTextSharp.text.pdf
             pobj = font.GetToUnicode(metrics);
             PdfIndirectReference toUnicodeRef = null;
 
-            if (pobj != null) {
+            if (pobj != null)
+            {
                 obj = writer.AddToBody(pobj);
                 toUnicodeRef = obj.IndirectReference;
             }

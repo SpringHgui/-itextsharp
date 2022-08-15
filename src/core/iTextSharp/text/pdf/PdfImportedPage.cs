@@ -53,7 +53,7 @@ namespace iTextSharp.text.pdf {
      */
     public class PdfImportedPage : PdfTemplate {
 
-        internal PdfReaderInstance readerInstance;
+        public PdfReaderInstance readerInstance;
         internal int pageNumber;
         internal int rotation;
         /**
