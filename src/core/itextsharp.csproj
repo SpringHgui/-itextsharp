@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<Version>1.0.0</Version>
-		<ProductName>iTextSharpCore</ProductName>
 		<TargetFrameworks>net461;net5.0</TargetFrameworks>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<AssemblyName>iTextSharpCore</AssemblyName>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="BouncyCastle.NetCore" Version="1.9.0" />
